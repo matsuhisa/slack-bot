@@ -13,6 +13,9 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
+    faye-websocket (0.10.7)
+      eventmachine (>= 0.12.0)
+      websocket-driver (>= 0.5.1)
     gli (2.17.0)
     hashie (3.5.6)
     i18n (0.9.0)
@@ -41,6 +44,7 @@ PLATFORMS
 DEPENDENCIES
   dotenv
   eventmachine
+  faye-websocket
   slack-ruby-client
 
 BUNDLED WITH
