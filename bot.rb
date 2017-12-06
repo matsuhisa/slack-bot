@@ -1,5 +1,14 @@
 require 'dotenv/load'
 require 'slack-ruby-client'
+# require "date"
+require 'active_record'
+require 'yaml'
+require 'erb'
+require './models/book.rb'
+
+db_conf = YAML.load( ERB.new( File.read("./config/database.yml") ).result )
+ActiveRecord::Base.establish_connection(db_conf["development"])
+
 
 Slack.configure do |conf|
   conf.token = ENV['API_TOKEN']
@@ -13,6 +22,12 @@ end
 
 client.on :message do |data|
   case data.text
+  when '本が好き' then
+    book = Book.new
+    book.title = "タイトルです"
+    #book.release_date = Date.today
+    book.save
+
   when 'にゃーん' then
     client.message channel: data['channel'], text: 'にゃーん :cat:'
   when 'ねこ' then
