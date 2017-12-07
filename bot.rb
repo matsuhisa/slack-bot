@@ -1,6 +1,5 @@
 require 'dotenv/load'
 require 'slack-ruby-client'
-# require "date"
 require 'active_record'
 require 'yaml'
 require 'erb'
@@ -25,8 +24,13 @@ client.on :message do |data|
   when '本が好き' then
     book = Book.new
     book.title = "タイトルです"
-    #book.release_date = Date.today
+    book.release_date = Date.today
     book.save
+
+    books = Book.all
+    books.each do |book|
+      client.message channel: data['channel'], text: "#{book.title} #{book.id}"
+    end
 
   when 'にゃーん' then
     client.message channel: data['channel'], text: 'にゃーん :cat:'
