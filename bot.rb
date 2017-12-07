@@ -1,14 +1,14 @@
-# slack-bot
-
-# API TOKEN の取得
-
-- https://mwedremoteintern2017.slack.com/services/new/bot
-
-# コード
-
-```ruby
 require 'dotenv/load'
 require 'slack-ruby-client'
+# require "date"
+require 'active_record'
+require 'yaml'
+require 'erb'
+require './models/book.rb'
+
+db_conf = YAML.load( ERB.new( File.read("./config/database.yml") ).result )
+ActiveRecord::Base.establish_connection(db_conf["development"])
+
 
 Slack.configure do |conf|
   conf.token = ENV['API_TOKEN']
@@ -21,28 +21,27 @@ client.on :hello do
 end
 
 client.on :message do |data|
-
   case data.text
+  when '本が好き' then
+    book = Book.new
+    book.title = "タイトルです"
+    #book.release_date = Date.today
+    book.save
+
   when 'にゃーん' then
     client.message channel: data['channel'], text: 'にゃーん :cat:'
   when 'ねこ' then
     client.message channel: data['channel'], text: 'https://farm6.staticflickr.com/5702/30703936136_c53433acff_z_d.jpg'
+  when 'time' then
+    client.message channel: data['channel'], text: "#{Time.now}"
   when 'こんにちは' then
     client.message channel: data['channel'], text: "<@#{data.user}>さん、こんにちは"
   when /^<@#{client.self.id}> こんにちは/ then
     client.message channel: data['channel'], text: "<@#{client.self.name}> デス。<@#{data.user}>さん、こんにちは"
   when /^<@#{client.self.id}>/ then
     message = %w(大吉 中吉 小吉).sample
-    client.message channel: data['channel'], text: "<@#{client.self.name}> デス。<@#{data.user}>さん、今日は #{message} です"
+    client.message channel: data['channel'], text: "<@#{client.self.name}> デス。<@#{data.user}>さん、#{message} です"
   end
 end
 
 client.start!
-
-```
-
-# 起動
-
-```bash
-$ ruby lib/bot.rb
-```

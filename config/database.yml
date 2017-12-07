@@ -1,0 +1,7 @@
+development:
+  adapter: mysql2
+  pool: 5
+  username: <%= ENV['USERNAME'] %>
+  host: 127.0.0.1
+  password:
+  database: <%= ENV['DATABASE'] %>
