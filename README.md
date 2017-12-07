@@ -1,6 +1,6 @@
 # slack-bot
 
-# API TOKEN の取得
+# Slack API TOKEN の取得
 
 - https://mwedremoteintern2017.slack.com/services/new/bot
 
@@ -41,8 +41,97 @@ client.start!
 
 ```
 
+## MySQL を用意する
+
+### インストール
+
+```
+brew install mysql
+```
+
+### セットアップ
+
+```
+mysql.server start
+mysql_secure_installation
+```
+
+## Sequel Pro を用意する
+
+- MySQL の中身を見るための GUI ツール
+- 無料。Mac で使える。
+- https://www.sequelpro.com/
+
+### DB を作る
+
+ここでは「slackbot」にしてある
+
+## bundle install
+
+```
+bundle install
+```
+
+## テーブルを作る
+
+### サンプル（book）
+
+- テーブル名は 複数形 の名詞
+
+```ruby
+require 'dotenv/load'
+require 'active_record'
+require 'yaml'
+require 'erb'
+
+db_conf = YAML.load( ERB.new( File.read("./config/database.yml") ).result )
+
+ActiveRecord::Base.establish_connection(db_conf["development"])
+ActiveRecord::Migration.create_table :books do |t|
+  t.string :title
+  t.integer :price
+  t.date :release_date
+  t.timestamps
+end
+```
+
+### 実行
+
+```
+ruby db/book.rb
+```
+
+## モデルを作る
+
+- データーベースにアクセスして、データを取り出したり、保存したりします
+
+```ruby
+class Book < ActiveRecord::Base
+end
+```
+
+## データを保存する
+
+- インスタンスを作り（ `Book.new` ）、値を設定します
+- インスタンス.save することでデータは保存できます
+
+```ruby
+book = Book.new
+book.title = "タイトルです"
+book.release_date = Date.today
+book.save
+```
+
+## データを取り出す
+
+- モデル.all で全部取得することができます
+
+```ruby
+books = Book.all
+```
+
 # 起動
 
 ```bash
-$ ruby lib/bot.rb
+$ ruby bot.rb
 ```
